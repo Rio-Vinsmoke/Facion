@@ -1,0 +1,147 @@
+.outfit-editor .oe-fieldset {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+}
+
+.outfit-editor .oe-layout {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr) 220px;
+  gap: 20px;
+  align-items: start;
+}
+
+.outfit-editor .oe-panel {
+  padding: 18px;
+  background: #fff;
+  border: 1px solid #e5e5e5;
+  border-radius: 16px;
+  min-width: 0;
+}
+
+.outfit-editor .oe-control {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.outfit-editor .oe-control input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  border: 1px solid #d8d8d8;
+  border-radius: 8px;
+  font: inherit;
+}
+
+.outfit-editor .oe-library {
+  display: grid;
+  gap: 12px;
+  max-height: 650px;
+  overflow-y: auto;
+}
+
+.outfit-editor .oe-product {
+  display: grid;
+  gap: 8px;
+  width: 100%;
+  padding: 12px;
+  background: #fff;
+  color: #222;
+  border: 1px solid #e5e5e5;
+  border-radius: 12px;
+  cursor: pointer;
+  text-align: left;
+}
+
+.outfit-editor .oe-product img {
+  display: block;
+  width: 100%;
+  height: 130px;
+  object-fit: contain;
+  background: #fff;
+}
+
+.outfit-editor .oe-workspace {
+  min-width: 0;
+  padding: 20px;
+  background: #f2f2f2;
+  border-radius: 16px;
+}
+
+.outfit-editor .oe-canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: #fff;
+  touch-action: none;
+  user-select: none;
+  border: 1px solid #e2e2e2;
+}
+
+.outfit-editor .oe-piece {
+  cursor: grab;
+}
+
+.outfit-editor .oe-piece:active {
+  cursor: grabbing;
+}
+
+.outfit-editor .oe-selection {
+  fill: none;
+  stroke: #8053d8;
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+  pointer-events: none;
+}
+
+.outfit-editor .oe-resize-handle,
+.outfit-editor .oe-rotate-handle {
+  fill: #fff;
+  stroke: #8053d8;
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+}
+
+.outfit-editor .oe-resize-handle {
+  cursor: nwse-resize;
+}
+
+.outfit-editor .oe-rotate-handle {
+  cursor: crosshair;
+}
+
+.outfit-editor .oe-actions {
+  display: grid;
+  gap: 10px;
+}
+
+.outfit-editor .oe-fieldset:disabled .oe-canvas {
+  pointer-events: none;
+}
+
+@media (max-width: 1000px) {
+  .outfit-editor .oe-layout {
+    grid-template-columns: 180px minmax(0, 1fr);
+  }
+
+  .outfit-editor .oe-panel:last-child {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 650px) {
+  .outfit-editor .oe-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .outfit-editor .oe-library {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-height: 260px;
+  }
+
+  .outfit-editor .oe-workspace {
+    padding: 10px;
+  }
+}
