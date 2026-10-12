@@ -1,3 +1,4 @@
+
 import type { Product } from '../types/product'
 import type { ProductReviewSummary } from '../types/review'
 
@@ -5,6 +6,8 @@ type ProductCardProps = {
   product: Product
   reviewSummary?: ProductReviewSummary
   onSelect: (product: Product) => void
+  isFavorite?: boolean
+  onToggleFavorite?: (productId: string) => void
 }
 
 function renderStars(rating: number): string {
@@ -16,13 +19,18 @@ export default function ProductCard({
   product,
   reviewSummary,
   onSelect,
+  isFavorite = false,
+  onToggleFavorite,
 }: ProductCardProps) {
   const displayImage = product.cutout_image || product.image
   const hasReviews = reviewSummary && reviewSummary.totalReviews > 0
 
   return (
     <article className="product-card">
-      <div className="product-image-container">
+      <div
+        className="product-image-container"
+        style={{ position: 'relative' }}
+      >
         <img
           src={displayImage}
           alt={product.name}
@@ -30,6 +38,44 @@ export default function ProductCard({
           loading="lazy"
           decoding="async"
         />
+
+        {onToggleFavorite && (
+          <button
+            type="button"
+            className={`product-wishlist-heart ${
+              isFavorite ? 'is-favorite' : ''
+            }`}
+            aria-label={
+              isFavorite
+                ? `Remove ${product.name} from wishlist`
+                : `Add ${product.name} to wishlist`
+            }
+            aria-pressed={isFavorite}
+            title={
+              isFavorite
+                ? 'Remove from wishlist'
+                : 'Add to wishlist'
+            }
+            onClick={(event) => {
+              event.stopPropagation()
+              onToggleFavorite(product.id)
+            }}
+          >
+            <svg
+              viewBox="0 0 24 24"
+              width="22"
+              height="22"
+              fill={isFavorite ? 'currentColor' : 'none'}
+              stroke="currentColor"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78Z" />
+            </svg>
+          </button>
+        )}
       </div>
 
       <div className="product-details">
@@ -48,11 +94,17 @@ export default function ProductCard({
               <span className="stars-icons" aria-hidden="true">
                 {renderStars(reviewSummary.averageRating)}
               </span>
-              <span className="rating-score">{reviewSummary.averageRating.toFixed(1)}</span>
-              <span className="rating-count">({reviewSummary.totalReviews})</span>
+              <span className="rating-score">
+                {reviewSummary.averageRating.toFixed(1)}
+              </span>
+              <span className="rating-count">
+                ({reviewSummary.totalReviews})
+              </span>
             </span>
           ) : (
-            <span className="no-reviews-text">No reviews yet</span>
+            <span className="no-reviews-text">
+              No reviews yet
+            </span>
           )}
         </div>
 

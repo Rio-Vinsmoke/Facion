@@ -470,13 +470,17 @@ function FacionApp({
             Bag changes may not survive a refresh.
           </p>
         )}
-        {activePage === 'Shop' && (
-          <Shop
-            userId={userId}
-            onAddToBag={addToBag}
-            onNavigateToAccount={() => onNavigate('Account')}
-          />
-        )}
+        
+{activePage === 'Shop' && (
+  <Shop
+    userId={userId}
+    onAddToBag={addToBag}
+    onNavigateToAccount={() => onNavigate('Account')}
+    favoriteIds={favoriteIds}
+    onToggleFavorite={toggleFavorite}
+  />
+)}
+
           {activePage === 'Wishlist' && (
             <Wishlist
               products={catalogue}

@@ -866,3 +866,50 @@
   color: #726770;
   margin: 0 0 20px 0;
 }
+
+/* FACION Product Wishlist Heart */
+
+.product-wishlist-heart {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 5;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 42px;
+  height: 42px;
+  padding: 0;
+
+  border: 1px solid rgba(0, 0, 0, 0.07);
+  border-radius: 50%;
+
+  background: rgba(255, 255, 255, 0.96);
+  color: #333;
+
+  cursor: pointer;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+
+  transition:
+    transform 0.2s ease,
+    color 0.2s ease,
+    background 0.2s ease;
+}
+
+.product-wishlist-heart:hover {
+  transform: scale(1.1);
+  color: #e63960;
+}
+
+.product-wishlist-heart.is-favorite {
+  color: #e63960;
+  background: #fff;
+}
+
+.product-wishlist-heart:focus-visible {
+  outline: 3px solid #e63960;
+  outline-offset: 3px;
+}
+
