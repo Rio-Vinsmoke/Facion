@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import type { Session } from '@supabase/supabase-js'
 import { supabase } from '../lib/supabase'
 import MyOrders from './MyOrders'
-import CatalogueUpload from './CatalogueUpload'
 
 export default function Account() {
   const [session, setSession] = useState<Session | null>(null)
@@ -180,11 +179,6 @@ export default function Account() {
 
       {session && (
         <>
-          <CatalogueUpload
-            key={`upload-${session.user.id}`}
-            userId={session.user.id}
-          />
-
           <MyOrders
             key={`orders-${session.user.id}`}
             userId={session.user.id}
