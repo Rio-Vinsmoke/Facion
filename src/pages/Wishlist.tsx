@@ -1,4 +1,8 @@
 import type { Product } from '../types/product'
+import {
+  getProductDisplayImage,
+  SAFE_PRODUCT_IMAGE_FALLBACK,
+} from '../lib/productUtils'
 
 type Props = {
   products: Product[]
@@ -27,7 +31,20 @@ export default function Wishlist({ products, favoriteIds, onRemove, onShop }: Pr
           {favorites.map(product => (
             <article className="product-card" key={product.id}>
               <div className="product-image-container">
-                <img className="product-image" src={product.cutout_image || product.image} alt={product.name} loading="lazy" />
+                <img
+                  className="product-image"
+                  src={getProductDisplayImage(product)}
+                  alt={product.name}
+                  loading="lazy"
+                  onError={(e) => {
+                    const target = e.currentTarget
+                    if (target.src !== product.image && product.image) {
+                      target.src = product.image
+                    } else if (target.src !== SAFE_PRODUCT_IMAGE_FALLBACK) {
+                      target.src = SAFE_PRODUCT_IMAGE_FALLBACK
+                    }
+                  }}
+                />
               </div>
               <div className="product-details">
                 <span className="product-category">{product.category}</span>

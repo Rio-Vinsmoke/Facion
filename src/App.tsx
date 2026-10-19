@@ -29,6 +29,9 @@ import type { Product } from './types/product'
 import type { CartItem } from './types/cart'
 import type { Look } from './types/look'
 import type { Board } from './types/board'
+import type { Session } from '@supabase/supabase-js'
+import Auth, { type AuthMode } from './pages/Auth'
+
 const pages = [
   'Shop',
   'Wishlist',
@@ -52,17 +55,45 @@ function errorMessage(error: unknown): string {
 }
 export default function App() {
   const [activePage, setActivePage] = useState<Page>('Shop')
-  const [userId, setUserId] = useState<string | null | undefined>(undefined)
+  const [session, setSession] = useState<Session | null | undefined>(undefined)
+  const [authMode, setAuthMode] = useState<AuthMode>('login')
   const [catalogue, setCatalogue] = useState<Product[] | null>(null)
   const [catalogueError, setCatalogueError] = useState('')
   const [catalogueReload, setCatalogueReload] = useState(0)
+
   useEffect(() => {
-    const { data } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUserId(session?.user.id ?? null)
+    // Detect password recovery callback in URL
+    const hash = window.location.hash
+    if (hash.includes('type=recovery') || hash.includes('access_token')) {
+      setAuthMode('reset')
+    }
+
+    // Resolve initial Supabase session before rendering protected pages
+    supabase.auth.getSession().then(({ data, error }) => {
+      if (error) {
+        setSession(null)
+      } else {
+        setSession(data.session)
+      }
+    })
+
+    const { data } = supabase.auth.onAuthStateChange((event, nextSession) => {
+      if (event === 'PASSWORD_RECOVERY') {
+        setAuthMode('reset')
+      }
+      setSession(nextSession)
+      if (event === 'SIGNED_IN') {
+        setActivePage('Shop')
+      } else if (event === 'SIGNED_OUT') {
+        setActivePage('Shop')
+        setAuthMode('login')
+      }
     })
     return () => data.subscription.unsubscribe()
   }, [])
+
   useEffect(() => {
+    if (!session) return
     let cancelled = false
     setCatalogueError('')
     async function loadCatalogue() {
@@ -77,7 +108,35 @@ export default function App() {
     return () => {
       cancelled = true
     }
-  }, [catalogueReload])
+  }, [session, catalogueReload])
+
+  // 1. Initial Supabase session resolution (prevent brief flash of the Shop)
+  if (session === undefined) {
+    return (
+      <div className="facion-app-loading" role="status" aria-live="polite">
+        <div className="facion-brand-header">
+          <h1 className="facion-brand-title">FACION</h1>
+          <p className="facion-brand-subtitle">Fashion for Every You</p>
+        </div>
+        <div className="facion-loading-spinner" aria-label="Resolving session..." />
+      </div>
+    )
+  }
+
+  // 2. Unauthenticated visitor: Login/Sign Up first
+  if (!session) {
+    return (
+      <Auth
+        initialMode={authMode}
+        onAuthSuccess={nextSession => {
+          setSession(nextSession)
+          setActivePage('Shop')
+        }}
+      />
+    )
+  }
+
+  // 3. Error loading catalogue
   if (catalogueError) {
     return (
       <main>
@@ -94,17 +153,25 @@ export default function App() {
       </main>
     )
   }
-  if (userId === undefined || catalogue === null) {
+
+  // 4. Loading catalogue for authenticated customer
+  if (catalogue === null) {
     return (
-      <main>
-        <p role="status">Loading FACION...</p>
-      </main>
+      <div className="facion-app-loading" role="status" aria-live="polite">
+        <div className="facion-brand-header">
+          <h1 className="facion-brand-title">FACION</h1>
+          <p className="facion-brand-subtitle">Loading Catalogue...</p>
+        </div>
+        <div className="facion-loading-spinner" aria-label="Loading catalogue..." />
+      </div>
     )
   }
+
+  // 5. Authenticated customer entering FACION
   return (
     <FacionApp
-      key={userId ?? 'guest'}
-      userId={userId}
+      key={session.user.id}
+      userId={session.user.id}
       catalogue={catalogue}
       activePage={activePage}
       onNavigate={setActivePage}

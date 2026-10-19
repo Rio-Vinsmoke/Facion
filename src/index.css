@@ -52,8 +52,37 @@
   height: 100%;
   object-fit: contain;
   object-position: center center;
-  padding: 18px;
+  padding: 16px;
   box-sizing: border-box;
+  transition: transform 0.2s ease;
+}
+
+/* Category-Aware Garment Visual Scale Normalization */
+.product-image-container.cat-tops .product-image {
+  padding: 12px;
+  transform: scale(1.08);
+}
+
+.product-image-container.cat-dresses .product-image {
+  padding: 12px 16px;
+  transform: scale(1.0);
+}
+
+.product-image-container.cat-jeans .product-image,
+.product-image-container.cat-trousers .product-image {
+  padding: 14px 18px;
+  transform: scale(1.02);
+}
+
+.product-image-container.cat-shoes .product-image,
+.product-image-container.cat-footwear .product-image {
+  padding: 16px;
+  transform: scale(1.15);
+}
+
+.product-image-container.cat-accessories .product-image {
+  padding: 14px;
+  transform: scale(1.06);
 }
 
 
@@ -209,6 +238,127 @@
   outline: 2px solid #684b60;
   outline-offset: 2px;
 }
+
+/* Shop Search Input with Inline Clear */
+.shop-search-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.shop-search-wrapper input[type="search"] {
+  width: 100%;
+  padding-right: 32px;
+}
+
+.shop-search-clear {
+  position: absolute;
+  right: 8px;
+  background: none;
+  border: none;
+  font-size: 13px;
+  color: #8c818a;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.shop-search-clear:hover {
+  color: #282329;
+  background: #ece7e9;
+}
+
+/* Active Filters Pills Bar */
+.active-filters-bar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 14px 0 10px 0;
+  padding: 10px 14px;
+  background: #f7f5f2;
+  border-radius: 8px;
+  border: 1px solid #ebe6e2;
+}
+
+.active-filters-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #554a53;
+  margin-right: 4px;
+}
+
+.filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  background: #ffffff;
+  border: 1px solid #dcd5d1;
+  border-radius: 16px;
+  font-size: 12px;
+  color: #383036;
+}
+
+.filter-chip button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  font-size: 11px;
+  color: #8c818a;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+}
+
+.filter-chip button:hover {
+  color: #c92a2a;
+}
+
+.clear-all-filters-btn {
+  background: none;
+  border: none;
+  font-size: 12px;
+  color: #684b60;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 4px 8px;
+  margin-left: auto;
+  font-weight: 500;
+}
+
+.clear-all-filters-btn:hover {
+  color: #43313e;
+}
+
+/* Empty State */
+.shop-empty-state {
+  text-align: center;
+  padding: 48px 20px;
+  background: #ffffff;
+  border: 1px dashed #ded7d4;
+  border-radius: 12px;
+  margin: 24px 0;
+}
+
+.shop-empty-title {
+  font-size: 17px;
+  font-weight: 600;
+  color: #282329;
+  margin: 0 0 8px 0;
+}
+
+.shop-empty-subtitle {
+  font-size: 14px;
+  color: #726770;
+  margin: 0 0 20px 0;
+}
 .primary-button,
 .secondary-button {
   padding: 12px 18px;
@@ -242,13 +392,48 @@
   margin-top: 32px;
 }
 
-.product-view-image {
+.product-view-image-container {
   width: 100%;
-  height: 480px;
-  padding: 32px;
-  object-fit: contain;
-  background: white;
+  aspect-ratio: 3 / 4;
+  max-height: 520px;
+  background: #ffffff;
+  border: 1px solid #e9e4e6;
   border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+}
+
+.product-view-image-container .product-view-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center center;
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+.product-view-image-container.cat-tops .product-view-image {
+  padding: 16px;
+  transform: scale(1.08);
+}
+
+.product-view-image-container.cat-dresses .product-view-image {
+  padding: 16px 20px;
+  transform: scale(1.0);
+}
+
+.product-view-image-container.cat-shoes .product-view-image,
+.product-view-image-container.cat-footwear .product-view-image {
+  padding: 20px;
+  transform: scale(1.15);
+}
+
+.product-view-image-container.cat-accessories .product-view-image {
+  padding: 18px;
+  transform: scale(1.06);
 }
 
 .product-view-details {

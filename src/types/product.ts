@@ -31,5 +31,7 @@ export type Product = {
   price: number
   image: string
   cutout_image?: string | null
+  color?: string | null
+  description?: string | null
   variants?: ProductVariant[]
 }

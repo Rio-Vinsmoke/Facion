@@ -1,5 +1,9 @@
 import { getSizeStock } from '../data/productStorage'
 import type { CartItem } from '../types/cart'
+import {
+  getProductDisplayImage,
+  SAFE_PRODUCT_IMAGE_FALLBACK,
+} from '../lib/productUtils'
 
 type BagProps = {
   items: CartItem[]
@@ -47,7 +51,18 @@ export default function Bag({
 
         return (
           <article className="bag-item" key={`${product.id}-${size}`}>
-            <img src={product.image} alt={product.name} />
+            <img
+              src={getProductDisplayImage(product)}
+              alt={product.name}
+              onError={(e) => {
+                const target = e.currentTarget
+                if (target.src !== product.image && product.image) {
+                  target.src = product.image
+                } else if (target.src !== SAFE_PRODUCT_IMAGE_FALLBACK) {
+                  target.src = SAFE_PRODUCT_IMAGE_FALLBACK
+                }
+              }}
+            />
 
             <div>
               <h3>{product.name}</h3>

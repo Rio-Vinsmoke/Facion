@@ -3,6 +3,10 @@ import { useEffect, useState } from 'react'
 import { fetchPreviewProducts } from '../data/productStorage'
 import type { Product } from '../types/product'
 import type { Look } from '../types/look'
+import {
+  getProductDisplayImage,
+  getGarmentAspectRatio,
+} from '../lib/productUtils'
 
 type Props = {
   look: Look
@@ -16,9 +20,6 @@ export default function LookPreview({ look }: Props) {
 
   useEffect(() => {
     let cancelled = false
-
-    setLoading(true)
-    setFailed(false)
 
     async function load() {
       try {
@@ -60,7 +61,11 @@ export default function LookPreview({ look }: Props) {
         <button
           type="button"
           className="secondary-button"
-          onClick={() => setReload(value => value + 1)}
+          onClick={() => {
+            setLoading(true)
+            setFailed(false)
+            setReload(value => value + 1)
+          }}
         >
           Try again
         </button>
@@ -79,10 +84,15 @@ export default function LookPreview({ look }: Props) {
       return []
     }
 
+    const ratio = getGarmentAspectRatio(product)
+    const height = item.width * ratio
+
     return [
       {
         ...item,
-        image: product.cutout_image || product.image,
+        product,
+        height,
+        image: getProductDisplayImage(product),
       },
     ]
   })
@@ -99,19 +109,23 @@ export default function LookPreview({ look }: Props) {
 
   const bounds = pieces.map(piece => {
     const angle = (piece.rotation * Math.PI) / 180
+    const cos = Math.abs(Math.cos(angle))
+    const sin = Math.abs(Math.sin(angle))
 
-    const extent =
-      (piece.width / 2) *
-      (Math.abs(Math.cos(angle)) + Math.abs(Math.sin(angle)))
+    const halfW = piece.width / 2
+    const halfH = piece.height / 2
 
-    const centerX = piece.x + piece.width / 2
-    const centerY = piece.y + piece.width / 2
+    const extentX = halfW * cos + halfH * sin
+    const extentY = halfW * sin + halfH * cos
+
+    const centerX = piece.x + halfW
+    const centerY = piece.y + halfH
 
     return {
-      left: centerX - extent,
-      right: centerX + extent,
-      top: centerY - extent,
-      bottom: centerY + extent,
+      left: centerX - extentX,
+      right: centerX + extentX,
+      top: centerY - extentY,
+      bottom: centerY + extentY,
     }
   })
 
@@ -146,12 +160,12 @@ export default function LookPreview({ look }: Props) {
             x={piece.x}
             y={piece.y}
             width={piece.width}
-            height={piece.width}
+            height={piece.height}
             preserveAspectRatio="xMidYMid meet"
             transform={`rotate(
               ${piece.rotation}
               ${piece.x + piece.width / 2}
-              ${piece.y + piece.width / 2}
+              ${piece.y + piece.height / 2}
             )`}
           />
         ))}

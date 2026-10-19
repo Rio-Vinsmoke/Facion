@@ -1,6 +1,12 @@
 
+import { useState } from 'react'
 import type { Product } from '../types/product'
 import type { ProductReviewSummary } from '../types/review'
+import {
+  getProductDisplayImage,
+  getProductCategoryClass,
+  SAFE_PRODUCT_IMAGE_FALLBACK,
+} from '../lib/productUtils'
 
 type ProductCardProps = {
   product: Product
@@ -22,21 +28,39 @@ export default function ProductCard({
   isFavorite = false,
   onToggleFavorite,
 }: ProductCardProps) {
-  const displayImage = product.cutout_image || product.image
+  const initialImage = getProductDisplayImage(product)
+  const [imageSrc, setImageSrc] = useState(initialImage)
+  const [prevProductKey, setPrevProductKey] = useState(
+    `${product.id}-${product.cutout_image}-${product.image}`,
+  )
+
+  const currentProductKey = `${product.id}-${product.cutout_image}-${product.image}`
+  if (prevProductKey !== currentProductKey) {
+    setPrevProductKey(currentProductKey)
+    setImageSrc(initialImage)
+  }
+
   const hasReviews = reviewSummary && reviewSummary.totalReviews > 0
 
   return (
     <article className="product-card">
       <div
-        className="product-image-container"
+        className={`product-image-container ${getProductCategoryClass(product.category)}`}
         style={{ position: 'relative' }}
       >
         <img
-          src={displayImage}
+          src={imageSrc}
           alt={product.name}
           className="product-image"
           loading="lazy"
           decoding="async"
+          onError={() => {
+            if (imageSrc !== product.image && product.image) {
+              setImageSrc(product.image)
+            } else if (imageSrc !== SAFE_PRODUCT_IMAGE_FALLBACK) {
+              setImageSrc(SAFE_PRODUCT_IMAGE_FALLBACK)
+            }
+          }}
         />
 
         {onToggleFavorite && (

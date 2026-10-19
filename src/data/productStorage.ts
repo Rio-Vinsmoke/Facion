@@ -13,6 +13,8 @@ export async function fetchProducts(): Promise<Product[]> {
       price,
       image,
       cutout_image,
+      color,
+      description,
       variants:product_variants(size, stock)
     `)
     .order('name', { ascending: true })
@@ -22,6 +24,8 @@ export async function fetchProducts(): Promise<Product[]> {
   return (data ?? []).map(product => ({
     ...product,
     cutout_image: product.cutout_image ?? null,
+    color: product.color ?? null,
+    description: product.description ?? null,
   })) as Product[]
 }
 

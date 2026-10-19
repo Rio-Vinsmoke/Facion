@@ -7,7 +7,7 @@
 
 .outfit-editor .oe-layout {
   display: grid;
-  grid-template-columns: 220px minmax(0, 1fr) 220px;
+  grid-template-columns: 240px minmax(0, 1fr) 230px;
   gap: 20px;
   align-items: start;
 }
@@ -20,47 +20,179 @@
   min-width: 0;
 }
 
-.outfit-editor .oe-control {
+.outfit-editor .oe-filter-controls {
   display: grid;
-  gap: 8px;
+  gap: 12px;
   margin-bottom: 16px;
 }
 
-.outfit-editor .oe-control input {
+.outfit-editor .oe-control {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 0;
+}
+
+.outfit-editor .oe-control-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #4a4547;
+}
+
+.outfit-editor .oe-search-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.outfit-editor .oe-search-box input {
   width: 100%;
   box-sizing: border-box;
-  padding: 10px 12px;
+  padding: 9px 32px 9px 12px;
   border: 1px solid #d8d8d8;
   border-radius: 8px;
   font: inherit;
+  font-size: 13px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.outfit-editor .oe-search-box input:focus {
+  outline: none;
+  border-color: #8053d8;
+  box-shadow: 0 0 0 2px rgba(128, 83, 216, 0.15);
+}
+
+.outfit-editor .oe-search-clear {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: #eae8e7;
+  border: none;
+  color: #6d6569;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+
+.outfit-editor .oe-search-clear:hover {
+  background: #d8d4d6;
+  color: #282329;
+}
+
+.outfit-editor .oe-category-select {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 8px 12px;
+  border: 1px solid #d8d8d8;
+  border-radius: 8px;
+  font: inherit;
+  font-size: 13px;
+  background-color: #fff;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.outfit-editor .oe-category-select:focus {
+  outline: none;
+  border-color: #8053d8;
 }
 
 .outfit-editor .oe-library {
   display: grid;
   gap: 12px;
-  max-height: 650px;
+  max-height: 560px;
   overflow-y: auto;
+  padding-right: 4px;
 }
 
 .outfit-editor .oe-product {
   display: grid;
-  gap: 8px;
+  gap: 6px;
   width: 100%;
-  padding: 12px;
+  padding: 10px;
   background: #fff;
   color: #222;
   border: 1px solid #e5e5e5;
   border-radius: 12px;
   cursor: pointer;
   text-align: left;
+  transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
-.outfit-editor .oe-product img {
+.outfit-editor .oe-product:hover {
+  border-color: #8053d8;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+.outfit-editor .oe-product-thumb-container {
+  width: 100%;
+  height: 120px;
+  background: #f8f7f5;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 6px;
+  box-sizing: border-box;
+}
+
+.outfit-editor .oe-product-thumb-container img {
   display: block;
   width: 100%;
-  height: 130px;
+  height: 100%;
   object-fit: contain;
-  background: #fff;
+  background: transparent;
+}
+
+.outfit-editor .oe-product-name {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: #282329;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.outfit-editor .oe-product-meta {
+  font-size: 11px;
+  color: #7d7379;
+}
+
+.outfit-editor .oe-product-add {
+  font-size: 11px;
+  font-weight: 500;
+  color: #8053d8;
+}
+
+.outfit-editor .oe-empty-state {
+  padding: 18px 12px;
+  text-align: center;
+  background: #faf9f7;
+  border-radius: 10px;
+  border: 1px dashed #dedad6;
+  margin-top: 8px;
+}
+
+.outfit-editor .oe-empty-state p {
+  font-size: 13px;
+  color: #72686e;
+  margin: 0 0 10px 0;
+}
+
+.outfit-editor .oe-clear-filters-btn {
+  font-size: 12px;
+  padding: 6px 14px;
 }
 
 .outfit-editor .oe-workspace {
@@ -78,6 +210,7 @@
   touch-action: none;
   user-select: none;
   border: 1px solid #e2e2e2;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
 }
 
 .outfit-editor .oe-piece {
@@ -102,6 +235,7 @@
   stroke: #8053d8;
   stroke-width: 2;
   vector-effect: non-scaling-stroke;
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.15));
 }
 
 .outfit-editor .oe-resize-handle {
@@ -109,7 +243,7 @@
 }
 
 .outfit-editor .oe-rotate-handle {
-  cursor: crosshair;
+  cursor: grab;
 }
 
 .outfit-editor .oe-actions {
@@ -123,7 +257,7 @@
 
 @media (max-width: 1000px) {
   .outfit-editor .oe-layout {
-    grid-template-columns: 180px minmax(0, 1fr);
+    grid-template-columns: 200px minmax(0, 1fr);
   }
 
   .outfit-editor .oe-panel:last-child {
