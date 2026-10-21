@@ -187,64 +187,162 @@ export default function Checkout({
     item => item.quantity > getSizeStock(item.product, item.size),
   )
 
+  // Order Confirmed Screen
   if (orderId) {
     return (
-      <section>
-        <h2>Test order placed</h2>
-        <p role="status">Your test order has been saved.</p>
-        <p>
-          Order ID: <strong>{orderId}</strong>
-        </p>
-        <p>
-          No payment was taken. This is a test order and will not be shipped.
-          Test stock has been deducted.
-        </p>
-        <button className="secondary-button" onClick={onBackToBag}>
-          Back to bag
-        </button>
-      </section>
+      <div className="facion-container" style={{ padding: '60px 24px 100px' }}>
+        <div
+          style={{
+            maxWidth: '560px',
+            margin: '0 auto',
+            background: 'var(--color-white)',
+            border: '1px solid var(--color-border)',
+            borderRadius: 'var(--radius-lg)',
+            padding: '40px',
+            textAlign: 'center',
+            boxShadow: 'var(--shadow-md)',
+          }}
+        >
+          <div
+            style={{
+              width: '64px',
+              height: '64px',
+              borderRadius: '50%',
+              background: '#ebfbee',
+              color: '#2b8a3e',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '32px',
+              margin: '0 auto 20px',
+            }}
+          >
+            ✓
+          </div>
+          <span style={{ fontSize: '11px', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--color-burgundy)', fontWeight: 700 }}>
+            Order Confirmed
+          </span>
+          <h1 style={{ fontFamily: 'var(--font-serif)', fontSize: '32px', fontWeight: 700, margin: '8px 0 12px', color: 'var(--color-charcoal)' }}>
+            Thank You for Your Order
+          </h1>
+          <p style={{ color: 'var(--color-muted)', fontSize: '14px', lineHeight: '1.6', margin: '0 0 24px' }}>
+            Your test order has been securely recorded. Order reference:
+          </p>
+          <div
+            style={{
+              padding: '12px 18px',
+              background: 'var(--color-ivory)',
+              borderRadius: 'var(--radius-sm)',
+              fontFamily: 'monospace',
+              fontSize: '15px',
+              fontWeight: 700,
+              color: 'var(--color-charcoal)',
+              letterSpacing: '0.05em',
+              marginBottom: '24px',
+            }}
+          >
+            {orderId}
+          </div>
+          <p style={{ fontSize: '12px', color: 'var(--color-muted)', margin: '0 0 28px', lineHeight: '1.5' }}>
+            Note: This is an atelier demonstration store. No real payment was charged and items will not be physically shipped. Inventory stock has been deducted.
+          </p>
+          <button type="button" className="primary-button" onClick={onBackToBag}>
+            Continue Shopping <span>→</span>
+          </button>
+        </div>
+      </div>
     )
   }
 
   return (
-    <section>
-      <h2>Checkout</h2>
-
+    <div className="facion-container" style={{ padding: '40px 24px 80px' }}>
       <button
+        type="button"
         className="secondary-button"
         onClick={onBackToBag}
         disabled={busy}
+        style={{ marginBottom: '24px' }}
       >
-        ← Back to bag
+        ← Back to Bag
       </button>
 
+      <div style={{ marginBottom: '32px' }}>
+        <span style={{ fontSize: '11px', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--color-muted)', display: 'block', marginBottom: '6px' }}>
+          Final Step
+        </span>
+        <h1 style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(32px, 4vw, 44px)', fontWeight: 700, margin: '0 0 6px', color: 'var(--color-charcoal)' }}>
+          Checkout
+        </h1>
+        <p style={{ margin: 0, color: 'var(--color-muted)', fontSize: '14px' }}>
+          Please confirm your delivery address and review your order.
+        </p>
+      </div>
+
       {items.length === 0 ? (
-        <p>Your bag is empty. Add a product before checking out.</p>
-      ) : !userId ? (
-        <>
-          <p>Sign in to save your delivery address and place a test order.</p>
-          <button className="primary-button" onClick={onSignIn}>
-            Go to account
+        <div style={{ padding: '40px', background: 'var(--color-white)', borderRadius: 'var(--radius-md)', textAlign: 'center', border: '1px solid var(--color-border)' }}>
+          <p style={{ color: 'var(--color-muted)' }}>Your bag is empty. Please add items before checking out.</p>
+          <button type="button" className="primary-button" onClick={onBackToBag}>
+            Return to Store
           </button>
-        </>
-      ) : loading ? (
-        <p role="status">Loading your delivery address...</p>
-      ) : loadError ? (
-        <>
-          <p role="alert">
-            Could not load your delivery address. {loadError}
+        </div>
+      ) : !userId ? (
+        /* Guest Authentication Gate */
+        <div
+          style={{
+            maxWidth: '560px',
+            margin: '20px auto 40px',
+            background: 'var(--color-sand)',
+            border: '1px solid var(--color-border)',
+            borderRadius: 'var(--radius-lg)',
+            padding: '40px 32px',
+            textAlign: 'center',
+            boxShadow: 'var(--shadow-sm)',
+          }}
+        >
+          <div style={{ fontSize: '36px', marginBottom: '14px' }}>🔒</div>
+          <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '26px', fontWeight: 700, margin: '0 0 10px', color: 'var(--color-charcoal)' }}>
+            Sign In to Complete Your Order
+          </h2>
+          <p style={{ color: 'var(--color-muted)', fontSize: '14px', lineHeight: '1.6', margin: '0 0 28px' }}>
+            You are currently shopping as a guest. To save your delivery address and confirm your order, please sign in or create your FACION account. Your bag will be preserved.
           </p>
           <button
+            type="button"
+            className="primary-button"
+            style={{ width: '100%', padding: '14px', fontSize: '14px', letterSpacing: '0.04em', textTransform: 'uppercase' }}
+            onClick={onSignIn}
+          >
+            Sign In / Register to Continue <span>→</span>
+          </button>
+        </div>
+      ) : loading ? (
+        <p role="status">Loading your saved delivery address...</p>
+      ) : loadError ? (
+        <div style={{ padding: '24px', background: 'var(--color-sand)', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-border)' }}>
+          <p role="alert" style={{ color: '#c92a2a' }}>Could not load your delivery address. {loadError}</p>
+          <button
+            type="button"
             className="secondary-button"
             onClick={() => setReload(value => value + 1)}
           >
             Try again
           </button>
-        </>
+        </div>
       ) : (
-        <div className="product-view">
-          <section className="studio-panel">
-            <h3>Delivery address</h3>
+        <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: '40px', alignItems: 'start' }}>
+          {/* Left Column: Address Form */}
+          <section
+            style={{
+              background: 'var(--color-sand)',
+              border: '1px solid var(--color-border)',
+              borderRadius: 'var(--radius-lg)',
+              padding: '32px',
+              boxShadow: 'var(--shadow-xs)',
+            }}
+          >
+            <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '22px', fontWeight: 700, margin: '0 0 20px', color: 'var(--color-charcoal)' }}>
+              Delivery Address (India)
+            </h2>
 
             <form
               onSubmit={event => {
@@ -254,23 +352,26 @@ export default function Checkout({
             >
               <fieldset
                 disabled={busy}
-                style={{ border: 0, padding: 0, margin: 0 }}
+                style={{ border: 0, padding: 0, margin: 0, display: 'grid', gap: '16px' }}
               >
-                <label className="studio-control">
-                  Full name
+                <div>
+                  <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, marginBottom: '6px' }}>
+                    Full Name
+                  </label>
                   <input
                     required
                     autoComplete="shipping name"
                     maxLength={120}
                     value={address.fullName}
-                    onChange={event =>
-                      updateAddress('fullName', event.target.value)
-                    }
+                    onChange={event => updateAddress('fullName', event.target.value)}
+                    style={{ width: '100%', padding: '12px 14px', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-sm)', font: 'inherit', boxSizing: 'border-box' }}
                   />
-                </label>
+                </div>
 
-                <label className="studio-control">
-                  Mobile number
+                <div>
+                  <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, marginBottom: '6px' }}>
+                    Mobile Number
+                  </label>
                   <input
                     required
                     type="tel"
@@ -280,54 +381,60 @@ export default function Checkout({
                     maxLength={10}
                     placeholder="10-digit mobile number"
                     value={address.phone}
-                    onChange={event =>
-                      updateAddress('phone', event.target.value)
-                    }
+                    onChange={event => updateAddress('phone', event.target.value)}
+                    style={{ width: '100%', padding: '12px 14px', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-sm)', font: 'inherit', boxSizing: 'border-box' }}
                   />
-                </label>
+                </div>
 
-                <label className="studio-control">
-                  House, street and area
+                <div>
+                  <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, marginBottom: '6px' }}>
+                    House, Street & Area
+                  </label>
                   <textarea
                     required
                     autoComplete="shipping street-address"
                     maxLength={300}
                     rows={3}
                     value={address.addressLine}
-                    onChange={event =>
-                      updateAddress('addressLine', event.target.value)
-                    }
+                    onChange={event => updateAddress('addressLine', event.target.value)}
+                    style={{ width: '100%', padding: '12px 14px', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-sm)', font: 'inherit', boxSizing: 'border-box' }}
                   />
-                </label>
+                </div>
 
-                <label className="studio-control">
-                  City
-                  <input
-                    required
-                    autoComplete="shipping address-level2"
-                    maxLength={100}
-                    value={address.city}
-                    onChange={event =>
-                      updateAddress('city', event.target.value)
-                    }
-                  />
-                </label>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, marginBottom: '6px' }}>
+                      City
+                    </label>
+                    <input
+                      required
+                      autoComplete="shipping address-level2"
+                      maxLength={100}
+                      value={address.city}
+                      onChange={event => updateAddress('city', event.target.value)}
+                      style={{ width: '100%', padding: '12px 14px', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-sm)', font: 'inherit', boxSizing: 'border-box' }}
+                    />
+                  </div>
 
-                <label className="studio-control">
-                  State / Union territory
-                  <input
-                    required
-                    autoComplete="shipping address-level1"
-                    maxLength={100}
-                    value={address.state}
-                    onChange={event =>
-                      updateAddress('state', event.target.value)
-                    }
-                  />
-                </label>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, marginBottom: '6px' }}>
+                      State / UT
+                    </label>
+                    <input
+                      required
+                      autoComplete="shipping address-level1"
+                      maxLength={100}
+                      value={address.state}
+                      onChange={event => updateAddress('state', event.target.value)}
+                      style={{ width: '100%', padding: '12px 14px', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-sm)', font: 'inherit', boxSizing: 'border-box' }}
+                    />
+                  </div>
+                </div>
 
-                <label className="studio-control">
-                  PIN code
+                <div>
+                  <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, marginBottom: '6px' }}>
+                    PIN Code
+                  </label>
                   <input
                     required
                     autoComplete="shipping postal-code"
@@ -335,76 +442,89 @@ export default function Checkout({
                     pattern="[1-9][0-9]{5}"
                     maxLength={6}
                     value={address.postalCode}
-                    onChange={event =>
-                      updateAddress('postalCode', event.target.value)
-                    }
+                    onChange={event => updateAddress('postalCode', event.target.value)}
+                    style={{ width: '100%', padding: '12px 14px', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-sm)', font: 'inherit', boxSizing: 'border-box' }}
                   />
-                </label>
+                </div>
 
-                <p>Country: India</p>
+                <p style={{ margin: '4px 0 10px', fontSize: '13px', color: 'var(--color-muted)' }}>
+                  Delivery Destination: <strong>India</strong>
+                </p>
 
-                <button className="primary-button" type="submit">
+                <button
+                  type="submit"
+                  className="secondary-button"
+                  style={{ justifySelf: 'start' }}
+                >
                   {busy && !ordering ? 'Saving...' : 'Save delivery address'}
                 </button>
               </fieldset>
             </form>
 
-            {message && <p role="status">{message}</p>}
+            {message && (
+              <p style={{ color: '#2b8a3e', marginTop: '14px', fontSize: '13px', fontWeight: 500 }} role="status">
+                ✓ {message}
+              </p>
+            )}
+            {error && (
+              <p style={{ color: '#c92a2a', marginTop: '14px', fontSize: '13px' }} role="alert">
+                ⚠ {error}
+              </p>
+            )}
           </section>
 
-          <aside className="studio-panel">
-            <h3>Bag summary</h3>
+          {/* Right Column: Order Review */}
+          <aside
+            style={{
+              background: 'var(--color-sand)',
+              border: '1px solid var(--color-border)',
+              borderRadius: 'var(--radius-lg)',
+              padding: '28px',
+              boxShadow: 'var(--shadow-sm)',
+            }}
+          >
+            <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '20px', fontWeight: 700, margin: '0 0 20px', color: 'var(--color-charcoal)' }}>
+              Bag Summary
+            </h2>
 
-            {items.map(item => (
-              <div key={`${item.product.id}-${item.size}`}>
-                <p>
-                  {item.product.name} — {item.size} × {item.quantity}
-                </p>
-                <p>
-                  ₹
-                  {(item.product.price * item.quantity).toLocaleString(
-                    'en-IN',
-                  )}
-                </p>
-              </div>
-            ))}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', maxHeight: '280px', overflowY: 'auto', paddingRight: '4px', marginBottom: '20px' }}>
+              {items.map(item => (
+                <div key={`${item.product.id}-${item.size}`} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', gap: '10px' }}>
+                  <span style={{ color: 'var(--color-charcoal)' }}>
+                    {item.product.name} ({item.size} × {item.quantity})
+                  </span>
+                  <strong style={{ color: 'var(--color-charcoal)' }}>
+                    ₹{(item.product.price * item.quantity).toLocaleString('en-IN')}
+                  </strong>
+                </div>
+              ))}
+            </div>
 
-            <strong>
-              Estimated items subtotal: ₹{subtotal.toLocaleString('en-IN')}
-            </strong>
+            <div style={{ borderTop: '1px solid var(--color-border-subtle)', paddingTop: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '16px' }}>
+              <span style={{ fontSize: '16px', fontWeight: 700 }}>Total</span>
+              <span style={{ fontSize: '24px', fontWeight: 800, color: 'var(--color-burgundy)' }}>
+                ₹{subtotal.toLocaleString('en-IN')}
+              </span>
+            </div>
 
-            <p>
-              Current catalogue prices and stock are checked when placing
-              the test order.
-            </p>
-
-            {hasStockIssue && (
-              <p role="alert">
-                Return to your bag to fix unavailable quantities.
+            {!addressSaved && (
+              <p style={{ fontSize: '12px', color: 'var(--color-muted)', margin: '0 0 16px' }}>
+                Please save your delivery address on the left before placing the test order.
               </p>
             )}
 
-            {!addressSaved && (
-              <p>Save your delivery address before placing the test order.</p>
-            )}
-
-            <p>
-              Test only: no payment, delivery charge or shipment.
-              Placing this order deducts test stock.
-            </p>
-
             <button
+              type="button"
               className="primary-button"
+              style={{ width: '100%', padding: '14px', fontSize: '14px', letterSpacing: '0.04em', textTransform: 'uppercase' }}
               disabled={busy || !addressSaved || hasStockIssue}
               onClick={() => void submitOrder()}
             >
-              {ordering ? 'Placing test order...' : 'Place test order'}
+              {ordering ? 'Placing test order...' : 'Place Test Order'}
             </button>
           </aside>
         </div>
       )}
-
-      {error && <p role="alert">{error}</p>}
-    </section>
+    </div>
   )
 }

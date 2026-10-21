@@ -33,82 +33,82 @@ import {
 
 
 type ShopProps = {
-
   userId?: string | null
-
   onAddToBag: (product: Product, size: string) => void
-
   onNavigateToAccount?: () => void
   favoriteIds: string[]
   onToggleFavorite: (productId: string) => void
-
+  initialCategory?: string
+  initialGender?: string
+  initialSearch?: string
+  externalSelectedProduct?: Product | null
+  onClearExternalSelectedProduct?: () => void
 }
 
-
-
 type SortOption =
-
   | 'featured'
-
   | 'price-low'
-
   | 'price-high'
-
   | 'name-az'
-
   | 'name-za'
 
-
-
 export default function Shop({
-
   userId,
-
   onAddToBag,
-
   onNavigateToAccount,
   favoriteIds,
   onToggleFavorite,
-
+  initialCategory,
+  initialGender,
+  initialSearch,
+  externalSelectedProduct,
+  onClearExternalSelectedProduct,
 }: ShopProps) {
-
   const [products, setProducts] = useState<Product[]>([])
-
   const [reviewSummaries, setReviewSummaries] = useState<
-
     Map<string, ProductReviewSummary>
-
   >(new Map())
-
   const [loading, setLoading] = useState(true)
-
   const [error, setError] = useState('')
-
   const [reload, setReload] = useState(0)
 
-
-
-  const [search, setSearch] = useState('')
-
-  const [category, setCategory] = useState('All')
-
-  const [gender, setGender] = useState('All')
-
+  const [search, setSearch] = useState(initialSearch ?? '')
+  const [category, setCategory] = useState(initialCategory ?? 'All')
+  const [gender, setGender] = useState(initialGender ?? 'All')
   const [sortBy, setSortBy] = useState<SortOption>('featured')
-
   const [maxPrice, setMaxPrice] = useState('All')
-
   const [sizeFilter, setSizeFilter] = useState('All')
-
   const [colorFilter, setColorFilter] = useState('All')
 
-
-
   const [selectedProduct, setSelectedProduct] =
-
-    useState<Product | null>(null)
-
+    useState<Product | null>(externalSelectedProduct ?? null)
   const [selectedSize, setSelectedSize] = useState('')
+
+  const [prevInitialCategory, setPrevInitialCategory] = useState(initialCategory)
+  if (initialCategory !== prevInitialCategory) {
+    setPrevInitialCategory(initialCategory)
+    setCategory(initialCategory ?? 'All')
+  }
+
+  const [prevInitialGender, setPrevInitialGender] = useState(initialGender)
+  if (initialGender !== prevInitialGender) {
+    setPrevInitialGender(initialGender)
+    setGender(initialGender ?? 'All')
+  }
+
+  const [prevInitialSearch, setPrevInitialSearch] = useState(initialSearch)
+  if (initialSearch !== prevInitialSearch) {
+    setPrevInitialSearch(initialSearch)
+    setSearch(initialSearch ?? '')
+  }
+
+  const [prevExternalProduct, setPrevExternalProduct] = useState(externalSelectedProduct)
+  if (externalSelectedProduct !== prevExternalProduct) {
+    setPrevExternalProduct(externalSelectedProduct)
+    if (externalSelectedProduct !== undefined) {
+      setSelectedProduct(externalSelectedProduct)
+    }
+  }
 
 
 
@@ -404,20 +404,17 @@ export default function Shop({
 
     return (
 
-      <>
-
+      <div className="facion-container" style={{ padding: '36px 24px 80px' }}>
         <button
-
           type="button"
-
           className="secondary-button"
-
-          onClick={() => setSelectedProduct(null)}
-
+          style={{ marginBottom: '24px' }}
+          onClick={() => {
+            setSelectedProduct(null)
+            onClearExternalSelectedProduct?.()
+          }}
         >
-
-          ← Back to shop
-
+          ← Back to catalogue
         </button>
 
 
@@ -643,7 +640,7 @@ export default function Shop({
 
         />
 
-      </>
+      </div>
 
     )
 
@@ -660,9 +657,45 @@ export default function Shop({
     sizeFilter !== 'All'
 
   return (
-    <>
-      <h2>Shop</h2>
-      <p>Discover your next favourite piece.</p>
+    <div className="facion-container" style={{ padding: '36px 24px 80px' }}>
+      <div style={{ marginBottom: '20px' }}>
+        <span style={{ fontSize: '11px', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--color-muted)', display: 'block', marginBottom: '6px' }}>
+          Atelier Ready-to-Wear
+        </span>
+        <h1 style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(32px, 4vw, 44px)', fontWeight: 700, margin: '0 0 6px', color: 'var(--color-charcoal)' }}>
+          Shop Catalogue
+        </h1>
+        <p style={{ margin: 0, color: 'var(--color-muted)', fontSize: '14px' }}>
+          Explore our complete collection of considered silhouettes, elevated basics, and statement outerwear.
+        </p>
+
+        {/* Quick Category Filter Pills */}
+        <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', padding: '16px 0 8px', scrollbarWidth: 'none' }}>
+          {['All', 'Tops', 'Jeans', 'Dresses', 'Hoodies', 'Shirts'].map(cat => (
+            <button
+              key={cat}
+              type="button"
+              onClick={() => setCategory(cat)}
+              style={{
+                padding: '8px 18px',
+                borderRadius: 'var(--radius-pill)',
+                border: '1px solid ' + (category === cat ? 'var(--color-burgundy)' : 'var(--color-border)'),
+                background: category === cat ? 'var(--color-burgundy)' : 'var(--color-white)',
+                color: category === cat ? '#ffffff' : 'var(--color-charcoal)',
+                fontSize: '12px',
+                fontWeight: 600,
+                letterSpacing: '0.04em',
+                textTransform: 'uppercase',
+                cursor: 'pointer',
+                whiteSpace: 'nowrap',
+                transition: 'all 0.15s ease',
+              }}
+            >
+              {cat === 'All' ? 'All Pieces' : cat}
+            </button>
+          ))}
+        </div>
+      </div>
 
       <div className="shop-filters">
         <label>
@@ -931,7 +964,7 @@ export default function Shop({
           )}
         </div>
       ) : null}
-    </>
+    </div>
 
   )
 

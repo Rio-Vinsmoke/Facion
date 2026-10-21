@@ -1,0 +1,839 @@
+/* ==========================================================================
+   FACION — Homepage Editorial Stylesheet
+   Faithfully matching the supplied fashion visual reference
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Hero Section
+   -------------------------------------------------------------------------- */
+.facion-hero {
+  position: relative;
+  width: 100%;
+  min-height: 94vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 108px 32px 56px;
+  box-sizing: border-box;
+  background: #191417 url('/images/campaign/hero-campaign.png') center top / cover no-repeat;
+  color: #ffffff;
+  overflow: hidden;
+}
+
+.facion-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(15, 10, 13, 0.45) 0%,
+    rgba(15, 10, 13, 0.1) 30%,
+    rgba(15, 10, 13, 0.3) 70%,
+    rgba(15, 10, 13, 0.75) 100%
+  );
+  z-index: 1;
+}
+
+.facion-hero-top {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.facion-hero-microcopy {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  line-height: 1.6;
+  max-width: 220px;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.facion-hero-microcopy.text-right {
+  text-align: right;
+}
+
+.facion-hero-center {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  margin: auto 0;
+  padding: 40px 0;
+}
+
+.facion-hero-title {
+  font-family: var(--font-serif);
+  font-size: clamp(56px, 14vw, 170px);
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #ffffff;
+  margin: 0;
+  line-height: 0.9;
+  text-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+  user-select: none;
+}
+
+.facion-hero-bottom {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 768px) {
+  .facion-hero {
+    min-height: 85vh;
+    padding: 88px 16px 40px;
+  }
+  .facion-hero-microcopy {
+    font-size: 9px;
+    max-width: 130px;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   2. Editorial Collage / Philosophy Section
+   -------------------------------------------------------------------------- */
+.facion-collage-section {
+  padding: 80px 0 60px;
+  background-color: var(--color-ivory);
+  overflow: hidden;
+}
+
+.facion-collage-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.6fr;
+  align-items: center;
+  gap: 48px;
+}
+
+.facion-collage-text h3 {
+  font-family: var(--font-serif);
+  font-size: clamp(28px, 4vw, 42px);
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-charcoal);
+  margin: 0 0 10px;
+}
+
+.facion-collage-text p {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.facion-collage-visuals {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 24px;
+}
+
+.facion-collage-photo {
+  position: relative;
+  background: var(--color-white);
+  padding: 10px;
+  box-shadow: var(--shadow-md);
+  border-radius: var(--radius-xs);
+  transition: transform var(--transition-normal);
+}
+
+.facion-collage-photo:hover {
+  transform: scale(1.03) !important;
+  z-index: 5;
+}
+
+.facion-collage-photo img {
+  display: block;
+  width: 240px;
+  height: 290px;
+  object-fit: cover;
+  border-radius: 2px;
+}
+
+.facion-collage-photo.photo-1 {
+  transform: rotate(-3deg);
+}
+
+.facion-collage-photo.photo-2 {
+  transform: rotate(2deg) translateY(18px);
+}
+
+.facion-handwriting-note {
+  font-family: var(--font-handwriting);
+  font-size: 38px;
+  color: var(--color-charcoal);
+  line-height: 1;
+  position: absolute;
+  right: -20px;
+  top: -30px;
+  transform: rotate(-6deg);
+  pointer-events: none;
+}
+
+.facion-slash-mark {
+  display: inline-block;
+  margin-left: 12px;
+  color: var(--color-muted);
+  font-size: 44px;
+  transform: rotate(20deg);
+}
+
+@media (max-width: 850px) {
+  .facion-collage-grid {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+  .facion-collage-visuals {
+    justify-content: center;
+  }
+  .facion-collage-photo img {
+    width: 160px;
+    height: 200px;
+  }
+  .facion-handwriting-note {
+    font-size: 28px;
+    right: 10px;
+    top: -20px;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   3. Featured Collection Section ("Late Summer Collection")
+   -------------------------------------------------------------------------- */
+.facion-featured-collection {
+  padding: 70px 0 90px;
+  background-color: var(--color-sand);
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+  position: relative;
+}
+
+.facion-section-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+  margin-bottom: 8px;
+}
+
+.facion-collection-header {
+  margin-bottom: 40px;
+}
+
+.facion-collection-title {
+  font-family: var(--font-serif);
+  font-size: clamp(42px, 6.5vw, 76px);
+  font-style: italic;
+  font-weight: 700;
+  color: var(--color-warm-brown);
+  margin: 0;
+  line-height: 1;
+}
+
+.facion-collection-title span {
+  font-family: var(--font-sans);
+  font-style: normal;
+  font-size: 0.35em;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--color-charcoal);
+  display: block;
+  margin-top: 6px;
+}
+
+.facion-collection-subtext {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+  margin: 14px 0 16px;
+}
+
+.facion-editorial-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-burgundy);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  border-bottom: 2px solid var(--color-burgundy);
+  padding-bottom: 2px;
+  transition: all var(--transition-fast);
+}
+
+.facion-editorial-link:hover {
+  color: var(--color-burgundy-hover);
+  border-color: var(--color-burgundy-hover);
+  transform: translateX(3px);
+}
+
+/* Layered Polaroid Composition */
+.facion-polaroid-stage {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 520px;
+  margin-top: 20px;
+}
+
+.facion-polaroid {
+  background: #ffffff;
+  padding: 12px 12px 36px;
+  box-shadow: 0 10px 30px rgba(40, 35, 41, 0.12);
+  border-radius: 3px;
+  position: absolute;
+  transition: transform var(--transition-normal), z-index var(--transition-normal);
+}
+
+.facion-polaroid:hover {
+  z-index: 10 !important;
+  transform: scale(1.04) !important;
+}
+
+.facion-polaroid img {
+  display: block;
+  object-fit: cover;
+  border-radius: 2px;
+}
+
+.facion-polaroid.card-1 {
+  left: 5%;
+  top: 10px;
+  transform: rotate(-4deg);
+  z-index: 2;
+}
+.facion-polaroid.card-1 img {
+  width: 220px;
+  height: 310px;
+}
+
+.facion-polaroid.card-2 {
+  left: 24%;
+  top: 40px;
+  transform: rotate(3deg);
+  z-index: 3;
+}
+.facion-polaroid.card-2 img {
+  width: 260px;
+  height: 340px;
+}
+
+.facion-polaroid.card-3 {
+  right: 8%;
+  top: 0;
+  transform: rotate(2deg);
+  z-index: 1;
+}
+.facion-polaroid.card-3 img {
+  width: 240px;
+  height: 320px;
+}
+
+/* Floating Product Hotspots */
+.facion-hotspot-card {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(8px);
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 8;
+  cursor: pointer;
+  transition: transform var(--transition-fast);
+}
+
+.facion-hotspot-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--color-burgundy);
+}
+
+.facion-hotspot-badge {
+  width: 22px;
+  height: 22px;
+  background: var(--color-burgundy);
+  color: #ffffff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.facion-hotspot-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.facion-hotspot-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-charcoal);
+}
+
+.facion-hotspot-price {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-burgundy);
+}
+
+.facion-polaroid-index {
+  position: absolute;
+  top: -24px;
+  right: 5%;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--color-muted);
+}
+
+@media (max-width: 900px) {
+  .facion-polaroid-stage {
+    min-height: auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+  }
+  .facion-polaroid {
+    position: static;
+    transform: none !important;
+  }
+  .facion-polaroid img {
+    width: 200px !important;
+    height: 260px !important;
+  }
+  .facion-hotspot-card {
+    display: none;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   4. Outfit Builder Promotional Feature Section (Deep Burgundy #4D1222)
+   -------------------------------------------------------------------------- */
+.facion-outfit-promo-banner {
+  background-color: var(--color-burgundy);
+  color: #ffffff;
+  padding: 80px 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.facion-outfit-promo-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 1.2fr 1.1fr;
+  align-items: center;
+  gap: 36px;
+}
+
+.facion-outfit-promo-copy .facion-section-label {
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.facion-outfit-promo-title {
+  font-family: var(--font-serif);
+  font-size: clamp(42px, 6vw, 68px);
+  font-weight: 700;
+  line-height: 1.05;
+  margin: 0 0 16px;
+  color: #ffffff;
+}
+
+.facion-outfit-promo-title em {
+  font-style: italic;
+  font-weight: 400;
+  display: block;
+}
+
+.facion-outfit-promo-tagline {
+  font-size: 14px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.85);
+  margin: 0 0 32px;
+}
+
+/* Phone Mockup Frame */
+.facion-phone-mockup {
+  width: 280px;
+  height: 480px;
+  background: #ffffff;
+  border-radius: 36px;
+  border: 7px solid #231118;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+  overflow: hidden;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  color: var(--color-charcoal);
+  padding: 16px 14px;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.facion-phone-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #ECE7E2;
+  font-family: var(--font-serif);
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  font-size: 14px;
+}
+
+.facion-phone-tabs {
+  display: flex;
+  gap: 8px;
+  margin: 12px 0 14px;
+}
+
+.facion-phone-tab {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  padding: 4px 8px;
+  border-radius: var(--radius-pill);
+  background: #F3EFEA;
+  color: var(--color-charcoal);
+}
+
+.facion-phone-tab.active {
+  background: var(--color-burgundy);
+  color: #ffffff;
+}
+
+.facion-phone-canvas-grid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  background: #FAF8F5;
+  border-radius: var(--radius-sm);
+  padding: 10px;
+  align-content: center;
+}
+
+.facion-phone-piece {
+  background: #ffffff;
+  border-radius: 6px;
+  padding: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 70px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.facion-phone-piece img {
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.facion-phone-cta {
+  width: 100%;
+  padding: 10px;
+  background: #231118;
+  color: #ffffff;
+  border: none;
+  border-radius: var(--radius-pill);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+/* Right Side Model Portrait & Stack */
+.facion-outfit-promo-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  position: relative;
+}
+
+.facion-taped-portrait {
+  position: relative;
+  background: #ffffff;
+  padding: 10px 10px 40px;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.3);
+  transform: rotate(-1.5deg);
+}
+
+.facion-tape-strip {
+  position: absolute;
+  top: -12px;
+  left: 35%;
+  width: 70px;
+  height: 24px;
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(2px);
+  transform: rotate(-3deg);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.facion-taped-portrait img {
+  width: 200px;
+  height: 280px;
+  object-fit: cover;
+  display: block;
+}
+
+.facion-taped-portrait .script-text {
+  position: absolute;
+  bottom: 8px;
+  left: 14px;
+  font-family: var(--font-handwriting);
+  font-size: 20px;
+  color: var(--color-charcoal);
+}
+
+.facion-outfit-mini-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.facion-mini-thumb {
+  width: 60px;
+  height: 80px;
+  background: #ffffff;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.facion-mini-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@media (max-width: 992px) {
+  .facion-outfit-promo-grid {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+  .facion-outfit-promo-right {
+    justify-content: center;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   5. Featured Products & Category Rows
+   -------------------------------------------------------------------------- */
+.facion-featured-products-section {
+  padding: 80px 0 50px;
+  background-color: var(--color-ivory);
+}
+
+.facion-shop-by-cat-section {
+  padding: 70px 0 80px;
+  background-color: var(--color-sand);
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.facion-stories-section {
+  padding: 70px 0 90px;
+  background-color: var(--color-ivory);
+}
+
+.facion-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.facion-section-heading {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-charcoal);
+  margin: 0;
+}
+
+.facion-view-all-btn {
+  background: none;
+  border: none;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-burgundy);
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: transform var(--transition-fast);
+}
+
+.facion-view-all-btn:hover {
+  transform: translateX(3px);
+}
+
+/* 5-Column Category Grid */
+.facion-category-grid-5 {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+}
+
+.facion-category-card {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: var(--color-charcoal);
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.facion-category-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+
+.facion-category-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--transition-normal);
+}
+
+.facion-category-card:hover img {
+  transform: scale(1.06);
+}
+
+.facion-category-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 40%, rgba(20, 14, 18, 0.75) 100%);
+  display: flex;
+  align-items: flex-end;
+  padding: 16px;
+}
+
+.facion-category-label {
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+@media (max-width: 900px) {
+  .facion-category-grid-5 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 550px) {
+  .facion-category-grid-5 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   6. Style Stories Section (3 Columns)
+   -------------------------------------------------------------------------- */
+.facion-stories-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.facion-story-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  cursor: pointer;
+}
+
+.facion-story-image-wrap {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: #F3EFEA;
+}
+
+.facion-story-image-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--transition-normal);
+}
+
+.facion-story-card:hover .facion-story-image-wrap img {
+  transform: scale(1.04);
+}
+
+.facion-story-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.facion-story-title {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-charcoal);
+  margin: 0;
+}
+
+.facion-story-cta {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-burgundy);
+}
+
+@media (max-width: 850px) {
+  .facion-stories-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+}

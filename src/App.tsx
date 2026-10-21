@@ -14,6 +14,12 @@ import {
   deleteCloudBoard,
   importBrowserCollections,
 } from './data/cloudStorage'
+import Header, { type Page } from './components/Header'
+import Footer from './components/Footer'
+import Home from './pages/Home'
+import Categories from './pages/Categories'
+import Collections from './pages/Collections'
+import OutfitPromo from './pages/OutfitPromo'
 import Shop from './pages/Shop'
 import Wishlist from './pages/Wishlist'
 import { loadWishlist, saveWishlist } from './data/wishlistStorage'
@@ -32,16 +38,6 @@ import type { Board } from './types/board'
 import type { Session } from '@supabase/supabase-js'
 import Auth, { type AuthMode } from './pages/Auth'
 
-const pages = [
-  'Shop',
-  'Wishlist',
-  'Outfit Studio',
-  'My Looks',
-  'My Boards',
-  'Bag',
-  'Account',
-] as const
-type Page = (typeof pages)[number] | 'Checkout'
 function errorMessage(error: unknown): string {
   if (
     error &&
@@ -53,13 +49,21 @@ function errorMessage(error: unknown): string {
   }
   return 'Something went wrong. Please try again.'
 }
+
 export default function App() {
-  const [activePage, setActivePage] = useState<Page>('Shop')
+  const [activePage, setActivePage] = useState<Page>('Home')
   const [session, setSession] = useState<Session | null | undefined>(undefined)
   const [authMode, setAuthMode] = useState<AuthMode>('login')
   const [catalogue, setCatalogue] = useState<Product[] | null>(null)
   const [catalogueError, setCatalogueError] = useState('')
   const [catalogueReload, setCatalogueReload] = useState(0)
+  const [pendingCheckoutRedirect, setPendingCheckoutRedirect] = useState(false)
+  const [shopFilters, setShopFilters] = useState<{
+    category?: string
+    gender?: string
+    search?: string
+  }>({})
+  const [selectedProductForShop, setSelectedProductForShop] = useState<Product | null>(null)
 
   useEffect(() => {
     // Detect password recovery callback in URL
@@ -68,7 +72,7 @@ export default function App() {
       setAuthMode('reset')
     }
 
-    // Resolve initial Supabase session before rendering protected pages
+    // Resolve initial Supabase session
     supabase.auth.getSession().then(({ data, error }) => {
       if (error) {
         setSession(null)
@@ -83,17 +87,20 @@ export default function App() {
       }
       setSession(nextSession)
       if (event === 'SIGNED_IN') {
-        setActivePage('Shop')
+        if (pendingCheckoutRedirect) {
+          setActivePage('Checkout')
+          setPendingCheckoutRedirect(false)
+        }
       } else if (event === 'SIGNED_OUT') {
-        setActivePage('Shop')
-        setAuthMode('login')
+        setPendingCheckoutRedirect(false)
       }
     })
     return () => data.subscription.unsubscribe()
-  }, [])
+  }, [pendingCheckoutRedirect])
 
+  // Fetch catalogue for both guests and authenticated users
   useEffect(() => {
-    if (!session) return
+    if (session === undefined) return
     let cancelled = false
     setCatalogueError('')
     async function loadCatalogue() {
@@ -110,7 +117,34 @@ export default function App() {
     }
   }, [session, catalogueReload])
 
-  // 1. Initial Supabase session resolution (prevent brief flash of the Shop)
+  function handleNavigate(
+    page: Page,
+    options?: {
+      category?: string
+      gender?: string
+      search?: string
+      product?: Product
+    },
+  ) {
+    if (
+      options?.category !== undefined ||
+      options?.gender !== undefined ||
+      options?.search !== undefined
+    ) {
+      setShopFilters({
+        category: options.category,
+        gender: options.gender,
+        search: options.search,
+      })
+    }
+    if (options?.product) {
+      setSelectedProductForShop(options.product)
+    }
+    setActivePage(page)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  // 1. Initial Supabase session resolution (prevent brief flash)
   if (session === undefined) {
     return (
       <div className="facion-app-loading" role="status" aria-live="polite">
@@ -123,29 +157,16 @@ export default function App() {
     )
   }
 
-  // 2. Unauthenticated visitor: Login/Sign Up first
-  if (!session) {
-    return (
-      <Auth
-        initialMode={authMode}
-        onAuthSuccess={nextSession => {
-          setSession(nextSession)
-          setActivePage('Shop')
-        }}
-      />
-    )
-  }
-
-  // 3. Error loading catalogue
+  // 2. Error loading catalogue
   if (catalogueError) {
     return (
-      <main>
-        <h1>FACION</h1>
-        <p role="alert">
+      <main className="facion-container" style={{ padding: '80px 24px', textAlign: 'center' }}>
+        <h1 style={{ fontFamily: 'Playfair Display, serif', fontSize: '3rem', marginBottom: '16px' }}>FACION</h1>
+        <p role="alert" style={{ marginBottom: '24px', color: '#b91c1c' }}>
           Could not load the catalogue. {catalogueError}
         </p>
         <button
-          className="secondary-button"
+          className="glass-glow-btn"
           onClick={() => setCatalogueReload(value => value + 1)}
         >
           Try again
@@ -154,7 +175,7 @@ export default function App() {
     )
   }
 
-  // 4. Loading catalogue for authenticated customer
+  // 3. Loading catalogue (for both guests and authenticated customers)
   if (catalogue === null) {
     return (
       <div className="facion-app-loading" role="status" aria-live="polite">
@@ -167,28 +188,72 @@ export default function App() {
     )
   }
 
-  // 5. Authenticated customer entering FACION
+  // 4. Public storefront open to all visitors (guest & authenticated)
   return (
     <FacionApp
-      key={session.user.id}
-      userId={session.user.id}
+      key={session ? session.user.id : 'guest'}
+      userId={session ? session.user.id : null}
+      session={session}
       catalogue={catalogue}
       activePage={activePage}
-      onNavigate={setActivePage}
+      onNavigate={handleNavigate}
+      shopFilters={shopFilters}
+      selectedProductForShop={selectedProductForShop}
+      onClearSelectedProduct={() => setSelectedProductForShop(null)}
+      pendingCheckoutRedirect={pendingCheckoutRedirect}
+      setPendingCheckoutRedirect={setPendingCheckoutRedirect}
+      authMode={authMode}
+      onAuthSuccess={nextSession => {
+        setSession(nextSession)
+        if (pendingCheckoutRedirect) {
+          setActivePage('Checkout')
+          setPendingCheckoutRedirect(false)
+        }
+      }}
     />
   )
 }
+
 type AppProps = {
   userId: string | null
+  session: Session | null
   catalogue: Product[]
   activePage: Page
-  onNavigate: (page: Page) => void
+  onNavigate: (
+    page: Page,
+    options?: {
+      category?: string
+      gender?: string
+      search?: string
+      product?: Product
+    },
+  ) => void
+  shopFilters: {
+    category?: string
+    gender?: string
+    search?: string
+  }
+  selectedProductForShop: Product | null
+  onClearSelectedProduct: () => void
+  pendingCheckoutRedirect: boolean
+  setPendingCheckoutRedirect: (value: boolean) => void
+  authMode: AuthMode
+  onAuthSuccess: (session: Session) => void
 }
+
 function FacionApp({
   userId,
+  session,
   catalogue,
   activePage,
   onNavigate,
+  shopFilters,
+  selectedProductForShop,
+  onClearSelectedProduct,
+  pendingCheckoutRedirect,
+  setPendingCheckoutRedirect,
+  authMode,
+  onAuthSuccess,
 }: AppProps) {
   const [cart, setCart] = useState<CartItem[]>(() => loadCart(catalogue))
   const [cartSaveFailed, setCartSaveFailed] = useState(false)
@@ -508,55 +573,93 @@ function FacionApp({
     activePage === 'My Looks' ||
     activePage === 'My Boards'
   return (
-    <div>
-      <header>
-        <h1>FACION</h1>
-        <nav aria-label="Main navigation">
-          {pages.map(page => (
-            <button
-              key={page}
-              disabled={orderBusy || busy}
-              onClick={() => onNavigate(page)}
-              aria-pressed={
-                activePage === page ||
-                (page === 'Bag' && activePage === 'Checkout')
-              }
-            >
-              {page === 'Bag' ? `Bag (${bagCount})` : page === 'Wishlist' ? `Wishlist (${wishlistCount})` : page}
-            </button>
-          ))}
-        </nav>
-      </header>
-      <main>
+    <div className="facion-app-wrapper">
+      <Header
+        activePage={activePage}
+        onNavigate={page => onNavigate(page)}
+        wishlistCount={wishlistCount}
+        bagCount={bagCount}
+        session={session}
+      />
+
+      <main className="facion-main-content">
         {wishlistSaveFailed && (
-          <p role="alert">Your browser could not save the wishlist.</p>
+          <div className="facion-container" style={{ padding: '16px' }}>
+            <p role="alert" style={{ color: '#b91c1c' }}>
+              Your browser could not save the wishlist.
+            </p>
+          </div>
         )}
         {cartSaveFailed && (
-          <p role="alert">
-            Your browser could not save the bag.
-            Bag changes may not survive a refresh.
-          </p>
+          <div className="facion-container" style={{ padding: '16px' }}>
+            <p role="alert" style={{ color: '#b91c1c' }}>
+              Your browser could not save the bag. Bag changes may not survive a refresh.
+            </p>
+          </div>
         )}
-        
-{activePage === 'Shop' && (
-  <Shop
-    userId={userId}
-    onAddToBag={addToBag}
-    onNavigateToAccount={() => onNavigate('Account')}
-    favoriteIds={favoriteIds}
-    onToggleFavorite={toggleFavorite}
-  />
-)}
 
-          {activePage === 'Wishlist' && (
-            <Wishlist
-              products={catalogue}
-              favoriteIds={favoriteIds}
-              onRemove={toggleFavorite}
-              onShop={() => onNavigate('Shop')}
-            />
-          )}
-        {activePage === 'Account' && <Account />}
+        {/* 1. Home Page (Default) */}
+        {activePage === 'Home' && (
+          <Home
+            catalogue={catalogue}
+            onNavigate={onNavigate}
+            favoriteIds={favoriteIds}
+            onToggleFavorite={toggleFavorite}
+            onSelectProduct={product => {
+              onNavigate('Shop', { product })
+            }}
+          />
+        )}
+
+        {/* 2. Shop Page */}
+        {activePage === 'Shop' && (
+          <Shop
+            userId={userId}
+            onAddToBag={addToBag}
+            onNavigateToAccount={() => onNavigate('Account')}
+            favoriteIds={favoriteIds}
+            onToggleFavorite={toggleFavorite}
+            initialCategory={shopFilters.category}
+            initialGender={shopFilters.gender}
+            initialSearch={shopFilters.search}
+            externalSelectedProduct={selectedProductForShop}
+            onClearExternalSelectedProduct={onClearSelectedProduct}
+          />
+        )}
+
+        {/* 3. Categories Page */}
+        {activePage === 'Categories' && (
+          <Categories
+            catalogue={catalogue}
+            onNavigate={onNavigate}
+          />
+        )}
+
+        {/* 4. Collections Page */}
+        {activePage === 'Collections' && (
+          <Collections
+            onNavigate={onNavigate}
+          />
+        )}
+
+        {/* 5. Outfit Builder Promotional Page */}
+        {activePage === 'Outfit Builder' && (
+          <OutfitPromo
+            onNavigate={page => onNavigate(page)}
+          />
+        )}
+
+        {/* 6. Wishlist Page */}
+        {activePage === 'Wishlist' && (
+          <Wishlist
+            products={catalogue}
+            favoriteIds={favoriteIds}
+            onRemove={toggleFavorite}
+            onShop={() => onNavigate('Shop')}
+          />
+        )}
+
+        {/* 7. Bag Page */}
         {activePage === 'Bag' && (
           <Bag
             items={cart}
@@ -565,18 +668,56 @@ function FacionApp({
             onCheckout={openCheckout}
           />
         )}
+
+        {/* 8. Checkout Page */}
         {activePage === 'Checkout' && (
           <Checkout
             userId={userId}
             items={cart}
             onBackToBag={() => onNavigate('Bag')}
-            onSignIn={() => onNavigate('Account')}
+            onSignIn={() => {
+              setPendingCheckoutRedirect(true)
+              onNavigate('Account')
+            }}
             onPlaceOrder={submitTestOrder}
           />
         )}
+
+        {/* 9. Account Page */}
+        {activePage === 'Account' && (
+          <Account
+            session={session}
+            returnToCheckout={pendingCheckoutRedirect}
+            onAuthSuccess={nextSession => {
+              onAuthSuccess(nextSession)
+              if (pendingCheckoutRedirect) {
+                setPendingCheckoutRedirect(false)
+                onNavigate('Checkout')
+              }
+            }}
+          />
+        )}
+
+        {/* 10. Direct Auth Page Fallback */}
+        {activePage === 'Auth' && (
+          <Auth
+            initialMode={authMode}
+            onAuthSuccess={nextSession => {
+              onAuthSuccess(nextSession)
+              if (pendingCheckoutRedirect) {
+                setPendingCheckoutRedirect(false)
+                onNavigate('Checkout')
+              } else {
+                onNavigate('Home')
+              }
+            }}
+          />
+        )}
+
+        {/* 11. Interactive Outfit Studio, My Looks, My Boards */}
         {collectionsPage && (
-          <>
-            <p>
+          <div className="facion-container" style={{ padding: '24px 16px' }}>
+            <p style={{ color: 'var(--color-charcoal)', opacity: 0.8 }}>
               {userId
                 ? 'Looks and boards are saved to your account.'
                 : 'Guest mode: looks and boards are saved in this browser.'}
@@ -591,8 +732,9 @@ function FacionApp({
                 Reload saved data
               </button>
             )}
-          </>
+          </div>
         )}
+
         <fieldset
           disabled={!ready || busy || orderBusy}
           style={{ border: 0, padding: 0, margin: 0, minWidth: 0 }}
@@ -600,26 +742,29 @@ function FacionApp({
           {userId &&
             ready &&
             (activePage === 'My Looks' || activePage === 'My Boards') && (
-              <div>
+              <div className="facion-container" style={{ padding: '16px' }}>
                 <button
                   className="secondary-button"
                   onClick={() => void importBrowserData()}
                 >
                   Import browser looks and boards
                 </button>
-                <p>
+                <p style={{ fontSize: '0.875rem', color: 'var(--color-warm-brown)', marginTop: '8px' }}>
                   Copy collections saved in this browser into your account.
                   Existing account entries are kept.
                 </p>
               </div>
             )}
+
           <div hidden={activePage !== 'Outfit Studio'}>
-            <button
-              className="secondary-button"
-              onClick={startNewLook}
-            >
-              Start a new look
-            </button>
+            <div className="facion-container" style={{ padding: '16px 24px 0' }}>
+              <button
+                className="secondary-button"
+                onClick={startNewLook}
+              >
+                Start a new look
+              </button>
+            </div>
             {ready && (
               <BoardOutfitStudio
                 key={studioSession}
@@ -629,6 +774,7 @@ function FacionApp({
               />
             )}
           </div>
+
           {activePage === 'My Looks' && ready && (
             <MyLooks
               looks={looks}
@@ -637,6 +783,7 @@ function FacionApp({
               onDelete={deleteSavedLook}
             />
           )}
+
           {activePage === 'My Boards' && ready && (
             <MyBoards
               boards={boards}
@@ -647,6 +794,8 @@ function FacionApp({
           )}
         </fieldset>
       </main>
+
+      <Footer onNavigate={onNavigate} />
     </div>
   )
 }

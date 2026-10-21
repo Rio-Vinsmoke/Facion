@@ -15,7 +15,7 @@ function getOrderRequest(
   signature: string,
 ): string {
   const key = requestKey(userId)
-  let existing: unknown = null
+  let existing: unknown
 
   try {
     const stored = localStorage.getItem(key)

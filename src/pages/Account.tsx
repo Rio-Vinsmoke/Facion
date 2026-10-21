@@ -3,26 +3,40 @@ import type { Session } from '@supabase/supabase-js'
 import { supabase } from '../lib/supabase'
 import MyOrders from './MyOrders'
 
-export default function Account() {
-  const [session, setSession] = useState<Session | null>(null)
-  const [loading, setLoading] = useState(true)
+type AccountProps = {
+  session?: Session | null
+  onAuthSuccess?: (session: Session) => void
+  returnToCheckout?: boolean
+}
+
+export default function Account({
+  session: propSession,
+  onAuthSuccess,
+  returnToCheckout,
+}: AccountProps) {
+  const [internalSession, setInternalSession] = useState<Session | null>(
+    propSession ?? null,
+  )
+  const [loading, setLoading] = useState(propSession === undefined)
   const [mode, setMode] = useState<'login' | 'signup'>('login')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [busy, setBusy] = useState(false)
   const [message, setMessage] = useState('')
 
-  useEffect(() => {
-    const { data } = supabase.auth.onAuthStateChange(
-      (_event, nextSession) => {
-        setSession(nextSession)
-        setLoading(false)
-        setPassword('')
-      },
-    )
+  const session = propSession !== undefined ? propSession : internalSession
 
-    return () => data.subscription.unsubscribe()
-  }, [])
+  useEffect(() => {
+    if (propSession !== undefined) {
+      setLoading(false)
+      return
+    }
+
+    supabase.auth.getSession().then(({ data }) => {
+      setInternalSession(data.session)
+      setLoading(false)
+    })
+  }, [propSession])
 
   async function submit() {
     if (busy) return
@@ -41,18 +55,32 @@ export default function Account() {
 
         if (error) throw error
 
+        if (data.session) {
+          setInternalSession(data.session)
+          if (onAuthSuccess) {
+            onAuthSuccess(data.session)
+          }
+        }
+
         setMessage(
           data.session
-            ? 'You are signed in.'
+            ? 'Account created and signed in.'
             : 'Check your email for a confirmation link, then log in.',
         )
       } else {
-        const { error } =
+        const { data, error } =
           await supabase.auth.signInWithPassword(credentials)
 
         if (error) throw error
 
-        setMessage('You are signed in.')
+        if (data.session) {
+          setInternalSession(data.session)
+          if (onAuthSuccess) {
+            onAuthSuccess(data.session)
+          }
+        }
+
+        setMessage('Signed in successfully.')
       }
 
       setPassword('')
@@ -76,6 +104,7 @@ export default function Account() {
 
       if (error) throw error
 
+      setInternalSession(null)
       setMessage('You are logged out.')
     } catch (error) {
       setMessage(
@@ -87,19 +116,37 @@ export default function Account() {
   }
 
   if (loading) {
-    return <p role="status">Loading your account...</p>
+    return (
+      <div className="facion-container" style={{ padding: '60px 24px', textAlign: 'center' }}>
+        <p role="status">Loading your account...</p>
+      </div>
+    )
   }
 
   return (
-    <>
+    <div className="facion-container" style={{ padding: '40px 24px 80px' }}>
       <section className="account-panel">
-        <h2>My Account</h2>
+        <h1 style={{ fontFamily: 'var(--font-serif)', fontSize: '26px', fontWeight: 700, margin: '0 0 12px', color: 'var(--color-charcoal)' }}>
+          My Account
+        </h1>
 
-        {message && <p role="status">{message}</p>}
+        {returnToCheckout && !session && (
+          <div style={{ padding: '10px 14px', background: 'var(--color-burgundy-subtle)', borderRadius: 'var(--radius-sm)', color: 'var(--color-burgundy)', fontSize: '13px', marginBottom: '16px' }}>
+            Sign in to continue to checkout. Your bag has been saved.
+          </div>
+        )}
+
+        {message && (
+          <p role="status" style={{ fontSize: '13px', color: message.includes('error') || message.includes('Could not') ? '#c92a2a' : '#2b8a3e', margin: '0 0 16px' }}>
+            {message}
+          </p>
+        )}
 
         {session ? (
-          <>
-            <p>Signed in as {session.user.email}</p>
+          <div>
+            <p style={{ fontSize: '14px', color: 'var(--color-charcoal)', marginBottom: '18px' }}>
+              Signed in as <strong>{session.user.email}</strong>
+            </p>
 
             <button
               className="secondary-button"
@@ -108,10 +155,12 @@ export default function Account() {
             >
               {busy ? 'Logging out...' : 'Log out'}
             </button>
-          </>
+          </div>
         ) : (
-          <>
-            <h3>{mode === 'login' ? 'Log in' : 'Create an account'}</h3>
+          <div>
+            <h2 style={{ fontSize: '16px', fontWeight: 600, margin: '0 0 16px', color: 'var(--color-charcoal)' }}>
+              {mode === 'login' ? 'Log in to your account' : 'Create a new account'}
+            </h2>
 
             <form
               className="account-form"
@@ -121,7 +170,7 @@ export default function Account() {
               }}
             >
               <label>
-                Email
+                Email address
                 <input
                   type="email"
                   value={email}
@@ -129,6 +178,7 @@ export default function Account() {
                   autoComplete="email"
                   required
                   disabled={busy}
+                  style={{ border: '1px solid var(--color-border)', borderRadius: 'var(--radius-sm)', padding: '10px 12px' }}
                 />
               </label>
 
@@ -144,6 +194,7 @@ export default function Account() {
                   minLength={mode === 'signup' ? 8 : undefined}
                   required
                   disabled={busy}
+                  style={{ border: '1px solid var(--color-border)', borderRadius: 'var(--radius-sm)', padding: '10px 12px' }}
                 />
               </label>
 
@@ -151,6 +202,7 @@ export default function Account() {
                 className="primary-button"
                 type="submit"
                 disabled={busy}
+                style={{ width: '100%', marginTop: '6px' }}
               >
                 {busy
                   ? 'Please wait...'
@@ -163,6 +215,7 @@ export default function Account() {
             <button
               className="secondary-button"
               disabled={busy}
+              style={{ width: '100%', marginTop: '10px' }}
               onClick={() => {
                 setMode(mode === 'login' ? 'signup' : 'login')
                 setPassword('')
@@ -170,21 +223,21 @@ export default function Account() {
               }}
             >
               {mode === 'login'
-                ? 'New here? Create an account'
+                ? 'New to FACION? Create an account'
                 : 'Already registered? Log in'}
             </button>
-          </>
+          </div>
         )}
       </section>
 
       {session && (
-        <>
+        <section style={{ marginTop: '40px' }}>
           <MyOrders
             key={`orders-${session.user.id}`}
             userId={session.user.id}
           />
-        </>
+        </section>
       )}
-    </>
+    </div>
   )
 }

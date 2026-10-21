@@ -7,16 +7,16 @@
   align-items: center;
   justify-content: center;
   padding: 40px 20px;
-  background: #faf9f7;
+  background: var(--color-ivory);
 }
 
 .auth-card {
   width: 100%;
   max-width: 440px;
-  background: #ffffff;
-  border: 1px solid #e9e4e6;
+  background: var(--color-sand);
+  border: 1px solid var(--color-border);
   border-radius: 16px;
-  box-shadow: 0 8px 30px rgba(40, 35, 41, 0.05);
+  box-shadow: 0 8px 30px rgba(40, 35, 41, 0.06);
   padding: 36px 32px;
   box-sizing: border-box;
 }
@@ -45,7 +45,7 @@
 
 .auth-tab-group {
   display: flex;
-  background: #f5f4f1;
+  background: rgba(40, 35, 41, 0.08);
   padding: 4px;
   border-radius: 10px;
   margin-bottom: 28px;
@@ -71,7 +71,7 @@
 }
 
 .auth-tab.active {
-  background: #ffffff;
+  background: var(--color-ivory);
   color: #282329;
   font-weight: 600;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
@@ -121,7 +121,7 @@
 .auth-input {
   width: 100%;
   padding: 12px 14px;
-  border: 1px solid #d8d4d6;
+  border: 1px solid var(--color-border);
   border-radius: 8px;
   font-size: 14px;
   font-family: inherit;
@@ -133,8 +133,8 @@
 
 .auth-input:focus {
   outline: none;
-  border-color: #684b60;
-  box-shadow: 0 0 0 3px rgba(104, 75, 96, 0.12);
+  border-color: #4D1222;
+  box-shadow: 0 0 0 3px rgba(77, 18, 34, 0.12);
 }
 
 .auth-input:disabled {
@@ -171,7 +171,7 @@
 .auth-forgot-link {
   align-self: flex-end;
   font-size: 13px;
-  color: #684b60;
+  color: #4D1222;
   background: none;
   border: none;
   padding: 0;
@@ -182,7 +182,7 @@
 }
 
 .auth-forgot-link:hover {
-  color: #43313e;
+  color: #380C18;
 }
 
 .auth-submit-btn {
@@ -192,7 +192,7 @@
   font-weight: 600;
   letter-spacing: 0.03em;
   color: #ffffff;
-  background: #684b60;
+  background: #4D1222;
   border: none;
   border-radius: 8px;
   cursor: pointer;
@@ -201,7 +201,7 @@
 }
 
 .auth-submit-btn:hover:not(:disabled) {
-  background: #533b4d;
+  background: #380C18;
 }
 
 .auth-submit-btn:active:not(:disabled) {
@@ -258,7 +258,7 @@
 .auth-switch-link {
   background: none;
   border: none;
-  color: #684b60;
+  color: #4D1222;
   font-weight: 600;
   cursor: pointer;
   padding: 0 4px;
@@ -267,7 +267,7 @@
 }
 
 .auth-switch-link:hover {
-  color: #43313e;
+  color: #380C18;
 }
 
 /* App Loading & Splash Screen */
@@ -277,7 +277,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #faf9f7;
+  background: #F7F4EF;
   padding: 20px;
 }
 
@@ -287,8 +287,9 @@
 }
 
 .facion-brand-title {
-  font-size: 36px;
-  letter-spacing: 0.2em;
+  font-family: var(--font-serif);
+  font-size: 38px;
+  letter-spacing: 0.22em;
   font-weight: 700;
   color: #282329;
   margin: 0 0 6px 0;
@@ -296,18 +297,18 @@
 }
 
 .facion-brand-subtitle {
-  font-size: 14px;
+  font-size: 13px;
   color: #817780;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   margin: 0;
 }
 
 .facion-loading-spinner {
-  width: 32px;
-  height: 32px;
+  width: 34px;
+  height: 34px;
   border: 3px solid #e5dfdc;
-  border-top-color: #684b60;
+  border-top-color: #4D1222;
   border-radius: 50%;
   animation: facion-spin 0.8s linear infinite;
 }
