@@ -19,11 +19,50 @@ export default function Home({
   onToggleFavorite,
   onSelectProduct,
 }: HomeProps) {
-  // Select top 5 featured items from catalogue
+  // Select exactly 5 distinct, visually varied featured items from catalogue
+  // representing diverse product types as shown in the reference:
+  // Hoodie/Outerwear, Top/Tee, Jeans/Denim, Shirt/Jacket, Dress
   const featuredProducts = useMemo(() => {
     if (!catalogue || catalogue.length === 0) return []
-    // Take a curated selection of products across categories
-    return catalogue.slice(0, 5)
+
+    const targetCategories = ['Hoodies', 'Tops', 'Jeans', 'Shirts', 'Dresses']
+    const selected: Product[] = []
+    const selectedIds = new Set<string>()
+
+    // 1. Pick one distinct product per category, preferring items with high-quality cutout images
+    for (const category of targetCategories) {
+      if (selected.length >= 5) break
+
+      const categoryItems = catalogue.filter(
+        p =>
+          p &&
+          p.id &&
+          !selectedIds.has(p.id) &&
+          p.category?.toLowerCase() === category.toLowerCase(),
+      )
+
+      const bestItem =
+        categoryItems.find(p => Boolean(p.cutout_image && p.cutout_image.trim())) ||
+        categoryItems[0]
+
+      if (bestItem) {
+        selected.push(bestItem)
+        selectedIds.add(bestItem.id)
+      }
+    }
+
+    // 2. If fewer than 5 categories matched, backfill with remaining distinct catalogue products
+    if (selected.length < 5) {
+      for (const product of catalogue) {
+        if (selected.length >= 5) break
+        if (product && product.id && !selectedIds.has(product.id)) {
+          selected.push(product)
+          selectedIds.add(product.id)
+        }
+      }
+    }
+
+    return selected.slice(0, 5)
   }, [catalogue])
 
   return (
@@ -48,24 +87,35 @@ export default function Home({
         </div>
 
         <div className="facion-hero-center">
-          <h1 className="facion-hero-title">FACION</h1>
-        </div>
-
-        <div className="facion-hero-bottom">
-          <button
-            type="button"
-            className="glass-glow-btn"
-            onClick={() => onNavigate('Shop')}
-          >
-            Shop Now <span>→</span>
-          </button>
-          <button
-            type="button"
-            className="glass-glow-btn"
-            onClick={() => onNavigate('Outfit Studio')}
-          >
-            Build an Outfit <span>→</span>
-          </button>
+          <h1 className="facion-hero-title facion-hero-wordmark" aria-label="FACION">
+            <span className="facion-letter facion-letter-f">F</span>
+            <span className="facion-letter facion-letter-a">A</span>
+            <span className="facion-letter facion-letter-c">
+              C
+              <svg className="facion-c-swash" viewBox="0 0 400 60" fill="none" aria-hidden="true">
+                <path d="M 10 15 C 80 35 180 45 280 40 C 340 36 385 24 398 12 C 401 9 397 7 392 9 C 360 21 315 31 255 31 C 170 31 90 20 10 15 Z" fill="currentColor" />
+              </svg>
+            </span>
+            <span className="facion-letter facion-letter-i">I</span>
+            <span className="facion-letter facion-letter-o">O</span>
+            <span className="facion-letter facion-letter-n">N</span>
+          </h1>
+          <div className="facion-hero-actions">
+            <button
+              type="button"
+              className="facion-hero-btn facion-hero-btn-primary"
+              onClick={() => onNavigate('Shop')}
+            >
+              Shop Now <span className="btn-arrow" aria-hidden="true">→</span>
+            </button>
+            <button
+              type="button"
+              className="facion-hero-btn facion-hero-btn-outline"
+              onClick={() => onNavigate('Outfit Studio')}
+            >
+              Build an Outfit <span className="btn-arrow" aria-hidden="true">→</span>
+            </button>
+          </div>
         </div>
       </section>
 
@@ -319,7 +369,7 @@ export default function Home({
           </div>
 
           {featuredProducts.length > 0 ? (
-            <div className="product-grid" style={{ marginTop: 0 }}>
+            <div className="facion-featured-products-row">
               {featuredProducts.map(product => (
                 <ProductCard
                   key={product.id}

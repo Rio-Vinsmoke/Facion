@@ -61,15 +61,8 @@ export default function Header({
             </svg>
           </button>
 
-          {/* Desktop Left Navigation */}
+          {/* Desktop Left Navigation (Shop, Categories, Outfit Builder) */}
           <nav className="facion-nav-desktop" aria-label="Main menu">
-            <button
-              type="button"
-              className={`facion-nav-link ${activePage === 'Home' ? 'active' : ''}`}
-              onClick={() => navigateTo('Home')}
-            >
-              Home
-            </button>
             <button
               type="button"
               className={`facion-nav-link ${activePage === 'Shop' ? 'active' : ''}`}
@@ -90,13 +83,6 @@ export default function Header({
               onClick={() => navigateTo('Outfit Builder')}
             >
               Outfit Builder
-            </button>
-            <button
-              type="button"
-              className={`facion-nav-link ${activePage === 'Collections' ? 'active' : ''}`}
-              onClick={() => navigateTo('Collections')}
-            >
-              Collections
             </button>
           </nav>
 
